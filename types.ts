@@ -2,7 +2,7 @@ export type Event = {
   id: number;
   title: string;
   link: string;
-  date: string;
+  date: Date;
   venue: string;
   city: string;
   country: string;
@@ -12,20 +12,18 @@ export type Event = {
 export type Match = {
   id: number;
   division: string;
-  red: string;
-  redLink: string | undefined;
-  redStats?: FighterStats;
-  blue: string;
-  blueLink: string | undefined;
-  blueStats?: FighterStats;
+  red: Fighter;
+  blue: Fighter;
   result: string;
   round: string;
   time: string;
 };
 
-export type FighterStats = {
-  height: string;
-  weight: string;
-  division: string;
-  reach: string;
+export type Fighter = {
+  name: string;
+  link: string | undefined;
+  height?: string;
+  weight?: string;
+  division?: string;
+  reach?: string;
 };

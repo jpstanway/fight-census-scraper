@@ -1,8 +1,6 @@
 import axios from "axios";
 import cheerio from "cheerio";
 
-import { FighterStats } from '../types';
-
 const baseURL = "https://en.wikipedia.org";
 
 /***************************************** */
@@ -26,12 +24,10 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
     if (th.text().toLowerCase() === "reach") reach = th.next().text().trim();
   });
   
-  const fighterStats: FighterStats = {
+  return {
     height,
     weight,
     division,
     reach
   };
-
-  return fighterStats;
 };
