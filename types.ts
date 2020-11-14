@@ -1,5 +1,4 @@
 export type Event = {
-  id: number;
   title: string;
   link: string;
   date: Date;
@@ -10,7 +9,6 @@ export type Event = {
 };
 
 export type Match = {
-  id: number;
   division: string;
   red: Fighter;
   blue: Fighter;

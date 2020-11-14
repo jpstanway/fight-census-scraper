@@ -4,6 +4,8 @@ import bodyParser from 'body-parser';
 import helmet from 'helmet';
 import mongoose from 'mongoose';
 
+import scraper from './services';
+
 const app = express();
 const db = process.env.DB_URI || '';
 const port = process.env.PORT || 5000;
@@ -27,4 +29,5 @@ app.get('/', (req, res) => {
 
 app.listen(port, () => {
   console.log(`Scraper server listening at ${port}`);
+  setTimeout(scraper, 3000);
 });

@@ -2,6 +2,10 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const matchSchema = new Schema({
+  event: {
+    type: Schema.Types.ObjectId,
+    ref: 'Event'
+  },
   division: String,
   red: {
     type: Schema.Types.ObjectId,

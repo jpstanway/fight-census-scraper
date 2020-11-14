@@ -39,7 +39,6 @@ export const getPastEvents = async () => {
           const country = row.eq(5).text().trim();
 
           events.push({
-            id, 
             title, 
             link, 
             date, 
@@ -65,6 +64,8 @@ export const getMatches = async (eventUrl: string) => {
   const { data } = await axios.get(baseURL + eventUrl);
   let matches: Match[] = [];
 
+  const event = cheerio("h1.firstHeading").text();
+
   cheerio("h2", data).each((index, element) => {
     const h2 = cheerio(element);
 
@@ -83,7 +84,7 @@ export const getMatches = async (eventUrl: string) => {
           const blue: Fighter = createFighter(row.eq(3));  
           
           return {
-            id: index,
+            event,
             division,
             red,
             blue,

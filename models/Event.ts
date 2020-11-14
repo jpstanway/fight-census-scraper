@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const eventSchema = new Schema({
-  title: String,
+  title: { type: String, unique: true },
   link: String,
   date: Date,
   venue: String,
