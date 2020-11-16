@@ -7,13 +7,7 @@ const eventSchema = new Schema({
   date: Date,
   venue: String,
   city: String,
-  country: String,
-  matches: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: 'Match'
-    }
-  ]
+  country: String
 });
 
 const Event = mongoose.model('Event', eventSchema);

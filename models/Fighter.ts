@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const fighterSchema = new Schema({
-  name: String,
+  name: { type: String, unique: true },
   link: String,
   height: String,
   weight: String,

@@ -60,11 +60,9 @@ export const getPastEvents = async () => {
 //@data:    fighter names, links, weight class,
 //          fight result (method), round and time
 /***************************************** */
-export const getMatches = async (eventUrl: string) => {
+export const getMatches = async (eventTitle: string, eventUrl: string) => {
   const { data } = await axios.get(baseURL + eventUrl);
   let matches: Match[] = [];
-
-  const event = cheerio("h1.firstHeading").text();
 
   cheerio("h2", data).each((index, element) => {
     const h2 = cheerio(element);
@@ -84,7 +82,7 @@ export const getMatches = async (eventUrl: string) => {
           const blue: Fighter = createFighter(row.eq(3));  
           
           return {
-            event,
+            event: eventTitle,
             division,
             red,
             blue,

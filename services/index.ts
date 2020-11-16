@@ -1,17 +1,14 @@
-// call scraper functions and save to database
-
-// scrape past events and save to db
-
-// loop through saved events and scrape match data
-// save match data as well as each fighter
-
-// loop through matches -> fighters and collect additional data
-
-import { savePastEvents } from './events';
+import { savePastEvents, saveMatches } from './events';
 
 const scraper = async () => {
   console.log('scraping events...');
-  await savePastEvents();
+  const savedEvents = await savePastEvents()
+  console.log('scraping matches...');
+  savedEvents.forEach(async (event) => {
+    const savedMatches = await saveMatches(event);
+    console.log('scraping fighters...');
+    
+  });
 };
 
 export default scraper;
