@@ -1,7 +1,8 @@
 import axios from "axios";
 import cheerio from "cheerio";
 
-import { Event, Match } from '../types';
+import { Event, Match, Fighter } from '../types';
+import { createFighter } from './utils/events.utils';
 
 const baseURL = "https://en.wikipedia.org";
 const currentYear = new Date().getFullYear();
@@ -32,13 +33,12 @@ export const getPastEvents = async () => {
           }
           const title = row.eq(1).text().trim();
           const link = row.eq(1).find("a")[0].attribs.href;
-          const date = row.eq(2).text().trim();
+          const date = new Date(row.eq(2).text().trim());
           const venue = row.eq(3).text().trim();
           const city = row.eq(4).text().trim();
           const country = row.eq(5).text().trim();
 
           events.push({
-            id, 
             title, 
             link, 
             date, 
@@ -60,9 +60,9 @@ export const getPastEvents = async () => {
 //@data:    fighter names, links, weight class,
 //          fight result (method), round and time
 /***************************************** */
-export const getMatches = async (eventUrl: string) => {
+export const getMatches = async (eventTitle: string, eventUrl: string) => {
   const { data } = await axios.get(baseURL + eventUrl);
-  let matches: Match[];
+  let matches: Match[] = [];
 
   cheerio("h2", data).each((index, element) => {
     const h2 = cheerio(element);
@@ -75,28 +75,17 @@ export const getMatches = async (eventUrl: string) => {
         
         if (row.length > 0) {
           const division = row.eq(0).text().trim();
-          const red = row.eq(1).text().trim();          
-          const blue = row.eq(3).text().trim();
           const result = row.eq(4).text().trim();
           const round = row.eq(5).text().trim();
           const time = row.eq(6).text().trim();
-
-          let redLink: string = ''; 
-          let blueLink: string = '';
-          if (row.eq(1).find("a").length > 0) {
-            redLink = row.eq(1).find("a")[0].attribs.href;
-          }
-          if (row.eq(3).find("a").length > 0) {
-            blueLink = row.eq(3).find("a")[0].attribs.href;
-          }
+          const red: Fighter = createFighter(row.eq(1));
+          const blue: Fighter = createFighter(row.eq(3));  
           
           return {
-            id: index,
+            event: eventTitle,
             division,
             red,
-            redLink,
             blue,
-            blueLink,
             result,
             round,
             time
