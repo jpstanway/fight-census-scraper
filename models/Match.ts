@@ -1,6 +1,22 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
+interface MatchDoc extends mongoose.Document {
+  event: string,
+  division: string,
+  red: {
+    name: string,
+    link: string
+  },
+  blue: {
+    name: string,
+    link: string
+  },
+  result: string,
+  round: string,
+  time: string
+}
+
 const matchSchema = new Schema({
   event: String,
   division: String,
@@ -23,6 +39,6 @@ matchSchema.index({
   blue: 1
 }, { unique: true });
 
-const Match = mongoose.model('Match', matchSchema);
+const Match = mongoose.model<MatchDoc>('Match', matchSchema);
 
 export default Match;

@@ -1,6 +1,15 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
+interface FighterDoc extends mongoose.Document {
+  name: string,
+  link: string,
+  height: string,
+  weight: string,
+  division: string,
+  reach: string
+}
+
 const fighterSchema = new Schema({
   name: { type: String, unique: true },
   link: String,
@@ -10,6 +19,6 @@ const fighterSchema = new Schema({
   reach: String
 });
 
-const Fighter = mongoose.model('Fighter', fighterSchema);
+const Fighter = mongoose.model<FighterDoc>('Fighter', fighterSchema);
 
 export default Fighter;

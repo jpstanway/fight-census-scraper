@@ -1,6 +1,7 @@
 import Event from '../models/Event';
 import Match from '../models/Match';
 import { getPastEvents, getMatches } from '../scraper/events';
+import { Event as EventType, Match as MatchType } from '../types';
 
 export const savePastEvents = async () => {
   const events = await getPastEvents();
@@ -21,14 +22,20 @@ export const savePastEvents = async () => {
   return await Event.find({});
 };
 
-export const saveMatches = async (event: any) => {
+export const saveAllMatches = async (events: EventType[]) => {
+  const eventsMap = events.map(async (event: EventType) => {
+    return await saveMatches(event);
+  });
+
+  return Promise.all(eventsMap);
+};
+
+export const saveMatches = async (event: EventType) => {
   const matches = await getMatches(event.title, event.link);
 
   try {
-    const res = await Match.insertMany(matches, { ordered: false });  
+    const res = await Match.insertMany(matches, { ordered: false, });  
     if (res.length > 0) {
-      const matchIds = res.map((m) => m._id);
-      await Event.updateOne({ title: event.title }, { $set: { matches: matchIds }});
       console.log(`Successfully saved ${res.length} matches!`);
     }
   } catch (error) {
@@ -39,5 +46,5 @@ export const saveMatches = async (event: any) => {
     }
   }
 
-  return await Match.find({});
+  return matches;
 };
