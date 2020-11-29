@@ -21,7 +21,7 @@ mongoose
     } else {
       console.log('Database connected!');
     }
-  })
+  });
 
 app.get('/', (req, res) => {
   res.send('Fight Census Data Scraper');
