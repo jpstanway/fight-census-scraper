@@ -1,6 +1,6 @@
 import Fighter from '../models/Fighter';
 import { Match as MatchType, Fighter as FighterType } from '../types';
-import { getFighterPhysicalStats } from '../scraper/fighters';
+import { getFighterPhysicalStats, getFighterPhysicalStatsAlt } from '../scraper/fighters';
 
 export const saveAllFighters = async (matches: MatchType[][]) => {
   const matchesMap = matches.map(async (matchGroup: MatchType[]) => {
@@ -28,9 +28,12 @@ export const saveFighter = async (fighter: FighterType) => {
   };
 
   try {
-    if (obj.link) {
+    if (obj.link && !obj.link.includes('tapology')) {
       const fighterStats = await getFighterPhysicalStats(obj.link);
       obj = { ...obj, ...fighterStats }; 
+    } else {
+      const fighterStatsAlt = await getFighterPhysicalStatsAlt(obj.name);
+      obj = { ...obj, ...fighterStatsAlt };
     }
   
     return await Fighter.updateOne({ name: obj.name }, obj, { upsert: true });

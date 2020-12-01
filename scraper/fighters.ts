@@ -1,6 +1,7 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import axiosRetry from 'axios-retry';
+import { removeAccentsFromName } from './utils/fighters.utils';
 
 axiosRetry(axios, { retries: 3 });
 
@@ -13,8 +14,11 @@ const altUrl = "https://www.google.com/search?q=tapology+";
 //@data:    height, weight, reach, division
 /***************************************** */
 export const getFighterPhysicalStats = async (fighterUrl: string) => {
+  const decoded = decodeURI(fighterUrl);
+  const format = removeAccentsFromName(decoded);
+  
   try {
-    const { data } = await axios.get(baseURL + fighterUrl);
+    const { data } = await axios.get(baseURL + format);
 
     let height: string = ''; 
     let weight: string = '';
@@ -37,7 +41,7 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
       reach
     };
   } catch (error) {
-    console.log(error);
+    console.log(`Error retrieving data from ${format}`);
   }
 };
 
@@ -47,24 +51,51 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
 //@data:    height, weight, reach, division
 /***************************************** */
 export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
-  // PART 1: retrieve url for stats page
-  const nameUrl = fighterName.toLowerCase().replace(/\s/g, "+");
-  const { data } = await axios.get(altUrl + nameUrl);
+  const format = removeAccentsFromName(fighterName);
+  const nameUrl = format.toLowerCase().replace(/\s/g, "+");
   let tapUrl: any;
 
-  cheerio("a", data).each((index, element) => {
-    const a = cheerio(element)[0].attribs.href;
+  try {
+    // PART 1: retrieve url for stats page
+    const { data } = await axios.get(altUrl + nameUrl);
 
-    if (!tapUrl && a.includes("www.tapology.com/fightcenter/fighters")) {
-      tapUrl = a;
-    }
-  });
+    cheerio("a", data).each((index, element) => {
+      const a = cheerio(element)[0].attribs.href;
 
-  // clean up url as best as possible
-  tapUrl = tapUrl.match(/https.*?&/i);
-  tapUrl = tapUrl[0].substring(0, tapUrl[0].length - 1);
-  
-  // PART 2: visit stats page and gather data
-  const result = await axios.get(tapUrl);
+      if (!tapUrl && a.includes("www.tapology.com/fightcenter/fighters")) {
+        tapUrl = a;
+      }
+    });
 
+    // clean up url as best as possible
+    tapUrl = tapUrl.match(/https.*?&/i);
+    tapUrl = tapUrl[0].substring(0, tapUrl[0].length - 1).trim();
+
+    // PART 2: visit stats page and gather data
+    const result = await axios.get(tapUrl);
+
+    let height: string = ''; 
+    let weight: string = '';
+    let division: string = '';
+    let reach: string = '';
+
+    cheerio('strong', result.data).each((index, element) => {
+      const strong = cheerio(element);
+      
+      if (strong.text().includes('Height')) height = strong.next().text().trim();
+      if (strong.text().includes('Last Weigh-In')) weight = strong.next().text().trim();
+      if (strong.text().includes("Reach")) reach = strong.next().text().trim();
+      if (strong.text().includes("Weight Class")) division = strong.next().text().trim();
+    });
+
+    return {
+      height,
+      weight,
+      division,
+      reach,
+      link: tapUrl
+    };
+  } catch (error) {
+    console.log(`Error retrieving data for ${fighterName} at ${tapUrl}`);
+  }
 };
