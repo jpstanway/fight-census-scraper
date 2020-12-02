@@ -6,9 +6,12 @@ export const saveAllFighters = async (matches: MatchType[][]) => {
   const matchesMap = matches.map(async (matchGroup: MatchType[]) => {
     const batch = matchGroup.map(async (match: MatchType) => {
       try {
-        const red = await saveFighter(match.red);
-        const blue = await saveFighter(match.blue);
-        return [red, blue];
+        const fighters = [
+          await saveFighter(match.red),
+          await saveFighter(match.blue)
+        ];
+
+        return Promise.all(fighters);
       } catch (error) {
         console.log(error);
       }
@@ -28,12 +31,13 @@ export const saveFighter = async (fighter: FighterType) => {
   };
 
   try {
-    if (obj.link && !obj.link.includes('tapology')) {
+    if (obj.link && !obj.link.includes('sherdog')) {
       const fighterStats = await getFighterPhysicalStats(obj.link);
       obj = { ...obj, ...fighterStats }; 
     } else {
       const fighterStatsAlt = await getFighterPhysicalStatsAlt(obj.name);
       obj = { ...obj, ...fighterStatsAlt };
+      console.log(obj);
     }
   
     return await Fighter.updateOne({ name: obj.name }, obj, { upsert: true });

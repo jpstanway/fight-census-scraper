@@ -6,7 +6,7 @@ import { removeAccentsFromName } from './utils/fighters.utils';
 axiosRetry(axios, { retries: 3 });
 
 const baseURL = "https://en.wikipedia.org";
-const altUrl = "https://www.google.com/search?q=tapology+";
+const altUrl = "https://www.google.com/search?q=sherdog+";
 
 /***************************************** */
 //@desc:    collect fighter size stats
@@ -47,13 +47,13 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
 
 /***************************************** */
 //@desc:    collect fighter size stats
-//@source:  tapology
+//@source:  
 //@data:    height, weight, reach, division
 /***************************************** */
 export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
   const format = removeAccentsFromName(fighterName);
   const nameUrl = format.toLowerCase().replace(/\s/g, "+");
-  let tapUrl: any;
+  let sherUrl: any;
 
   try {
     // PART 1: retrieve url for stats page
@@ -62,40 +62,40 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     cheerio("a", data).each((index, element) => {
       const a = cheerio(element)[0].attribs.href;
 
-      if (!tapUrl && a.includes("www.tapology.com/fightcenter/fighters")) {
-        tapUrl = a;
+      if (!sherUrl && a.includes("https://www.sherdog.com/fighter")) {
+        sherUrl = a;
       }
     });
 
     // clean up url as best as possible
-    tapUrl = tapUrl.match(/https.*?&/i);
-    tapUrl = tapUrl[0].substring(0, tapUrl[0].length - 1).trim();
+    sherUrl = sherUrl.match(/https.*?&/i);
+    sherUrl = sherUrl[0].substring(0, sherUrl[0].length - 1).trim();
 
     // PART 2: visit stats page and gather data
-    const result = await axios.get(tapUrl);
+    const result = await axios.get(sherUrl);
 
     let height: string = ''; 
     let weight: string = '';
     let division: string = '';
     let reach: string = '';
 
-    cheerio('strong', result.data).each((index, element) => {
-      const strong = cheerio(element);
-      
-      if (strong.text().includes('Height')) height = strong.next().text().trim();
-      if (strong.text().includes('Last Weigh-In')) weight = strong.next().text().trim();
-      if (strong.text().includes("Reach")) reach = strong.next().text().trim();
-      if (strong.text().includes("Weight Class")) division = strong.next().text().trim();
-    });
+    const div = cheerio('.size_info', result.data);
+    const findHeight = div.find('.height').find('strong').text().trim();
+    const findWeight = div.find('.weight').find('strong').text().trim();
+    const findDivision = div.find('.wclass').find('strong').text().trim();
+
+    if (findHeight) height = findHeight;
+    if (findWeight) weight = findWeight;
+    if (findDivision) division = findDivision;
 
     return {
       height,
       weight,
       division,
       reach,
-      link: tapUrl
+      link: sherUrl
     };
   } catch (error) {
-    console.log(`Error retrieving data for ${fighterName} at ${tapUrl}`);
+    console.log(`Error retrieving data for ${fighterName} at ${sherUrl}`);
   }
 };
