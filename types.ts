@@ -25,3 +25,7 @@ export type Fighter = {
   division?: string;
   reach?: string;
 };
+
+export type IterableObject = {
+  [key: string]: string;
+};

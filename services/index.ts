@@ -1,6 +1,5 @@
 import { savePastEvents, saveAllMatches } from './events';
-import { saveAllFighters } from './fighters';
-import { getFighterPhysicalStatsAlt } from '../scraper/fighters';
+import { saveAllFighters, saveAddtlFighters } from './fighters';
 
 const scraper = async () => {
   console.log('scraping events...');
@@ -10,6 +9,8 @@ const scraper = async () => {
   console.log('scraping fighters...');
   const savedFighters = await saveAllFighters(savedMatches);
   console.log('Data collection complete!', `${savedFighters.length} events saved`);
+  const savedAddtlFighters = await saveAddtlFighters();
+  console.log(`${savedAddtlFighters.length} additional fighters saved!`);
 };
 
 export default scraper;

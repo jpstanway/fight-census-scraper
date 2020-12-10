@@ -2,14 +2,14 @@ import axios from "axios";
 import cheerio from "cheerio";
 
 import { Event, Match, Fighter } from '../types';
-import { createFighter } from './utils/events.utils';
+import { createFighter } from './utils/fighters.utils';
 
 const baseURL = "https://en.wikipedia.org";
 const currentYear = new Date().getFullYear();
 const eventsURL = `/wiki/${currentYear}_in_UFC`;
 
 /****************************************************** */
-//@desc:    collect links to all past UFC events in 2020
+//@desc:    collect links to all past UFC events in the current year
 //@source:  wikipedia
 //@data:    link, title, date, venue, city, country
 /****************************************************** */
