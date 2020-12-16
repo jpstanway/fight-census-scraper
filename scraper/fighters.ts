@@ -24,21 +24,19 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
 
     let height: string = ''; 
     let weight: string = '';
-    let division: string = '';
     let reach: string = '';
 
     cheerio(".infobox", data).find("th").each((index, element) => {
       const th = cheerio(element);
+      const regex = /n?\[\d\]/g;
 
-      if (th.text().toLowerCase() === "height") height = th.next().text().trim();
+      if (th.text().toLowerCase() === "height") height = th.next().text().replace(regex, "").trim();
       if (th.text().toLowerCase() === "weight") weight = th.next().text().trim();
-      if (th.text().toLowerCase() === "division") division = th.next().text().trim();
-      if (th.text().toLowerCase() === "reach") reach = th.next().text().trim();
+      if (th.text().toLowerCase() === "reach") reach = th.next().text().replace(regex, "").trim();
     });
 
     if (height) update.height = height;
     if (weight) update.weight = weight;
-    if (division) update.division = division;
     if (reach) update.reach = reach;
     
     return update;
@@ -56,6 +54,7 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
   const format = removeAccentsFromName(fighterName);
   const nameUrl = format.toLowerCase().replace(/\s/g, "+");
   const update: IterableObject = {};
+  const regex = /n?\[\d\]/g;
   let sherUrl: any;
 
   try {
@@ -82,7 +81,7 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     let division: string = '';
 
     const div = cheerio('.size_info', result.data);
-    height = div.find('.height').find('strong').text().trim();
+    height = div.find('.height').find('strong').text().replace(regex, "").trim();
     weight = div.find('.weight').find('strong').text().trim();
     division = div.find('.wclass').find('strong').text().trim();
 
@@ -110,12 +109,15 @@ export const getAddtlFighters = async () => {
   // iterate over each division
   const h2 = cheerio('#Debuted_fighters', data).parent();
   h2.nextAll('.wikitable').each((index, element) => {
+    const regex = /^.*weight/ig;
+    let division: any = cheerio(element).prev().text().match(regex);
+    division = division[0] || '';
     const table = cheerio(element).find('tbody');
 
     cheerio('tr', table).each((index, element) => {
       if (index > 0) {
         const td = cheerio(element).children().eq(1);
-        const fighter = createFighter(td);
+        const fighter = createFighter(td, division);
 
         fightersMap.push(fighter);
       }

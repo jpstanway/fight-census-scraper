@@ -2,7 +2,7 @@ import axios from "axios";
 import cheerio from "cheerio";
 
 import { Event, Match, Fighter } from '../types';
-import { createFighter } from './utils/fighters.utils';
+import { createFighter, convertCatchweight } from './utils/fighters.utils';
 
 const baseURL = "https://en.wikipedia.org";
 const currentYear = new Date().getFullYear();
@@ -74,12 +74,18 @@ export const getMatches = async (eventTitle: string, eventUrl: string) => {
         const row = cheerio(element).find("td");
         
         if (row.length > 0) {
-          const division = row.eq(0).text().trim();
+          let division = row.eq(0).text().trim();
           const result = row.eq(4).text().trim();
           const round = row.eq(5).text().trim();
           const time = row.eq(6).text().trim();
-          const red: Fighter = createFighter(row.eq(1));
-          const blue: Fighter = createFighter(row.eq(3));  
+
+          if (division.includes("Catchweight")) {
+            // convert catchweight
+            division = convertCatchweight(division);
+          }
+
+          const red: Fighter = createFighter(row.eq(1), division);
+          const blue: Fighter = createFighter(row.eq(3), division);  
           
           return {
             event: eventTitle,

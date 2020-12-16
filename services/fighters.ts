@@ -33,6 +33,7 @@ export const saveAllFighters = async (matches: MatchType[][]) => {
 export const saveFighter = async (fighter: FighterType) => {
   let obj = {
     name: fighter.name,
+    division: fighter.division,
     link: fighter.link
   };
 
@@ -70,7 +71,8 @@ export const saveAddtlFighters = async () => {
     .map(async (fighter: FighterType) => {
       const obj = {
         name: fighter.name,
-        link: fighter.link
+        link: fighter.link,
+        division: fighter.division
       };
 
       // save fighter

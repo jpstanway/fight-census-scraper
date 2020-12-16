@@ -1,7 +1,7 @@
 import Event from '../models/Event';
 import Match from '../models/Match';
 import { getPastEvents, getMatches } from '../scraper/events';
-import { Event as EventType, Match as MatchType } from '../types';
+import { Event as EventType } from '../types';
 
 export const savePastEvents = async () => {
   const events = await getPastEvents();

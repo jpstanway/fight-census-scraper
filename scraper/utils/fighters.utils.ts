@@ -15,9 +15,10 @@ export const removeAccentsFromName = (name: string) => {
     return formatted.replace(/\./g, "");
 };
 
-export const createFighter = (obj: any) => {
+export const createFighter = (obj: any, division: string) => {
     const fighter = {
       name: obj.text().replace(/\*/g, "").trim(),
+      division,
       link: ''
     };
     
@@ -26,4 +27,21 @@ export const createFighter = (obj: any) => {
     }
   
     return fighter;
-  };
+};
+
+export const convertCatchweight = (division: string) => {
+    const regex = /[^0-9.]/gi;
+    let weight = parseInt(division.replace(regex, ""));
+
+    if (weight > 115 && weight < 125) return "Women's Strawweight";
+    if (weight > 125 && weight < 135) return "Flyweight";
+    if (weight > 135 && weight < 145) return "Bantamweight";
+    if (weight > 145 && weight < 155) return "Featherweight";
+    if (weight > 155 && weight < 170) return "Lightweight";
+    if (weight > 170 && weight < 186) return "Welterweight";
+    if (weight > 185 && weight < 205) return "Middleweight";
+    if (weight > 205 && weight < 215) return "Light Heavyweight";
+    if (weight > 215) return "Heavyweight";
+
+    return division;
+};
