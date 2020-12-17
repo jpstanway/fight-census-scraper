@@ -126,3 +126,38 @@ export const getAddtlFighters = async () => {
   
   return fightersMap;
 };
+
+/***************************************** */
+//@desc:    get list of current champions
+//@source:  wikipedia
+//@data:    name only, save to current docs
+/***************************************** */
+export const getCurrentChampions = async () => {
+  const url = baseURL + "/wiki/List_of_current_UFC_fighters";
+  const { data } = await axios.get(url);
+  let championsMap: any = [];
+
+  cheerio('h2', data).each((index, element) => {
+    const h2 = cheerio(element);
+
+    if (h2.text().includes("Current champions")) {
+      const table = h2.next().next('.wikitable').find('tbody');
+      cheerio("tr", table).each((index, element) => {
+        const tr = cheerio(element);
+        let td: any;
+
+        if (tr.children().length === 9) {
+          td = tr.children().eq(1).text().trim();
+        } else {
+          td = tr.children().eq(4).text().trim();
+        }
+        
+        if (td !== 'Champion' && td !== 'Vacant') {
+          championsMap.push(td);
+        }
+      });
+    }
+  });
+  
+  return championsMap;
+};

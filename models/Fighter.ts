@@ -7,7 +7,8 @@ interface FighterDoc extends mongoose.Document {
   height: string,
   weight: string,
   division: string,
-  reach: string
+  reach: string,
+  isChampion: boolean
 }
 
 const fighterSchema = new Schema({
@@ -16,7 +17,8 @@ const fighterSchema = new Schema({
   height: String,
   weight: String,
   division: String,
-  reach: String
+  reach: String,
+  isChampion: { type: Boolean, default: false }
 });
 
 const Fighter = mongoose.model<FighterDoc>('Fighter', fighterSchema);

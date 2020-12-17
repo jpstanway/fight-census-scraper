@@ -4,7 +4,8 @@ import { Match as MatchType, Fighter as FighterType } from '../types';
 import { 
   getFighterPhysicalStats, 
   getFighterPhysicalStatsAlt, 
-  getAddtlFighters 
+  getAddtlFighters,
+  getCurrentChampions 
 } from '../scraper/fighters';
 import { removeAccentsFromName } from '../scraper/utils/fighters.utils';
 
@@ -82,3 +83,12 @@ export const saveAddtlFighters = async () => {
   return Promise.all(fightersMap);
 };
 
+export const updateChampions = async () => {
+  const champions = await getCurrentChampions();
+
+  const championsMap = champions.map(async (champion: string) => {
+    return await Fighter.update({ name: champion }, { isChampion: true });
+  });
+    
+  return Promise.all(championsMap);
+};

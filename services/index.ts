@@ -1,5 +1,5 @@
 import { savePastEvents, saveAllMatches } from './events';
-import { saveAllFighters, saveAddtlFighters } from './fighters';
+import { saveAllFighters, saveAddtlFighters, updateChampions } from './fighters';
 
 const scraper = async () => {
   console.log('scraping events...');
@@ -11,6 +11,8 @@ const scraper = async () => {
   console.log('Data collection complete!', `${savedFighters.length} events saved`);
   const savedAddtlFighters = await saveAddtlFighters();
   console.log(`${savedAddtlFighters.length} additional fighters saved!`);
+  const updatedChampions = await updateChampions();
+  console.log(`${updatedChampions.length} champions updated!`);
 };
 
 export default scraper;

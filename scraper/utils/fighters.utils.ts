@@ -17,7 +17,7 @@ export const removeAccentsFromName = (name: string) => {
 
 export const createFighter = (obj: any, division: string) => {
     const fighter = {
-      name: obj.text().replace(/\*/g, "").trim(),
+      name: obj.text().replace(/\(.*\)|\*/gi, "").trim(),
       division,
       link: ''
     };
