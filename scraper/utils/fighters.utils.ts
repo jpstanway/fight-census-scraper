@@ -45,3 +45,11 @@ export const convertCatchweight = (division: string) => {
 
     return division;
 };
+
+export const getAge = (th: any) => {
+  const strip = /[^\d]/gi;
+  
+  let age = th.next().find('.ForceAgeToShow').text();
+  age = age.replace(strip, "").trim();
+  return age;
+};

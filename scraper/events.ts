@@ -74,7 +74,7 @@ export const getMatches = async (eventTitle: string, eventUrl: string) => {
         const row = cheerio(element).find("td");
         
         if (row.length > 0) {
-          let division = row.eq(0).text().trim();
+          let division = row.eq(0).text().replace(/’/g, "'").trim();
           const result = row.eq(4).text().trim();
           const round = row.eq(5).text().trim();
           const time = row.eq(6).text().trim();

@@ -47,7 +47,11 @@ export const saveFighter = async (fighter: FighterType) => {
       obj = { ...obj, ...fighterStatsAlt };
     }
   
-    return await Fighter.updateOne({ name: obj.name }, obj, { upsert: true });
+    return await Fighter.updateOne(
+      { name: obj.name }, 
+      {...obj, $addToSet: { allDivisions: obj.division }},
+      { upsert: true }
+    );
   } catch (error) {
     console.log(error);
   }
@@ -87,7 +91,7 @@ export const updateChampions = async () => {
   const champions = await getCurrentChampions();
 
   const championsMap = champions.map(async (champion: string) => {
-    return await Fighter.update({ name: champion }, { isChampion: true });
+    return await Fighter.updateOne({ name: champion }, { isChampion: true });
   });
     
   return Promise.all(championsMap);

@@ -1,7 +1,11 @@
 import axios from "axios";
 import cheerio from "cheerio";
 import axiosRetry from 'axios-retry';
-import { removeAccentsFromName, createFighter } from './utils/fighters.utils';
+import { 
+  removeAccentsFromName, 
+  createFighter, 
+  getAge 
+} from './utils/fighters.utils';
 import { IterableObject } from '../types';
 
 axiosRetry(axios, { retries: 3 });
@@ -12,7 +16,7 @@ const altUrl = "https://www.google.com/search?q=sherdog+";
 /***************************************** */
 //@desc:    collect fighter size stats
 //@source:  wikipedia
-//@data:    height, weight, reach, division
+//@data:    height, weight, reach
 /***************************************** */
 export const getFighterPhysicalStats = async (fighterUrl: string) => {
   const decoded = decodeURI(fighterUrl);
@@ -25,6 +29,7 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
     let height: string = ''; 
     let weight: string = '';
     let reach: string = '';
+    let age: string = '';
 
     cheerio(".infobox", data).find("th").each((index, element) => {
       const th = cheerio(element);
@@ -33,11 +38,13 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
       if (th.text().toLowerCase() === "height") height = th.next().text().replace(regex, "").trim();
       if (th.text().toLowerCase() === "weight") weight = th.next().text().trim();
       if (th.text().toLowerCase() === "reach") reach = th.next().text().replace(regex, "").trim();
+      if (th.text().toLowerCase() === "born") age = getAge(th);
     });
 
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (reach) update.reach = reach;
+    if (age) update.age = age;
     
     return update;
   } catch (error) {
@@ -79,15 +86,20 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     let height: string = ''; 
     let weight: string = '';
     let division: string = '';
+    let age: string = '';
 
-    const div = cheerio('.size_info', result.data);
-    height = div.find('.height').find('strong').text().replace(regex, "").trim();
-    weight = div.find('.weight').find('strong').text().trim();
-    division = div.find('.wclass').find('strong').text().trim();
-
+    const sizeDiv = cheerio('.size_info', result.data);
+    const ageDiv = cheerio('.birth_info', result.data);
+    
+    height = sizeDiv.find('.height').find('strong').text().replace(regex, "").trim();
+    weight = sizeDiv.find('.weight').find('strong').text().trim();
+    division = sizeDiv.find('.wclass').find('strong').text().trim();
+    age = ageDiv.find('.birthday').find('strong').text().replace(/[^\d]/gi, "").trim();
+    
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (division) update.division = division;
+    if (age) update.age = age;
     update.link = sherUrl;
 
     return update;
