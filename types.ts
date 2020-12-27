@@ -22,6 +22,8 @@ export type Fighter = {
   link: string | undefined;
   height?: string;
   weight?: string;
+  age?: string;
+  country?: string;
   division?: string;
   reach?: string;
 };

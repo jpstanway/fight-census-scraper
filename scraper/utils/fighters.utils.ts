@@ -1,3 +1,5 @@
+import { STATES } from "mongoose";
+
 export const removeAccentsFromName = (name: string) => {
   const accents = 'ÁÀÁÂÃÄÅàáâãäåăÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëęðÇçćÐÌÍÎÏìíîïĽłÙÚÛÜùúûüÑñńřŠšţțŸÿýŽž';
   const accentsOut = "AAAAAAAaaaaaaaOOOOOOOooooooEEEEeeeeeeCccDIIIIiiiiLlUUUUuuuuNnnrSsttYyyZz";
@@ -53,3 +55,62 @@ export const getAge = (th: any) => {
   age = age.replace(strip, "").trim();
   return age;
 };
+
+export const getCountry = (th: any) => {
+  const text = th.next().text().split(",");
+  let country = text[text.length - 1];
+  country = country.replace(/\)|\(|\[.*\]|(, Republic of)/gi, "").trim();
+
+  if (country === "Georgian SSR") country = "Georgia";
+  if (country === "Soviet Union") country = "Russia";
+  if (states.includes(country)) country = "United States";
+
+  return country;
+};
+
+const states = [
+  "Arkansas",
+  "Alaska",
+  "Alabama",
+  "Arizona",
+  "California",
+  "Colorado",
+  "Connecticut",
+  "North Carolina",
+  "South Carolina",
+  "Delaware",
+  "North Dakota",
+  "South Dakota",
+  "Florida",
+  "Georgia",
+  "Idaho",
+  "Iowa",
+  "Illinois",
+  "Kentucky",
+  "Kansas",
+  "Lousiana",
+  "Montana",
+  "Massachusetts",
+  "Mississippi",
+  "Michigan",
+  "Minnesota",
+  "Maryland",
+  "Missouri",
+  "Maine",
+  "New Hampshire",
+  "New Mexico",
+  "Nevada",
+  "New York",
+  "Nebraska",
+  "Ohio",
+  "Oregon",
+  "Pennsylvania",
+  "Rhode Island",
+  "Tennessee",
+  "Texas",
+  "Utah",
+  "West Virginia",
+  "Virginia",
+  "Washington",
+  "Wisconsin"
+];

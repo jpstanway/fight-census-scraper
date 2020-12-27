@@ -4,7 +4,8 @@ import axiosRetry from 'axios-retry';
 import { 
   removeAccentsFromName, 
   createFighter, 
-  getAge 
+  getAge,
+  getCountry 
 } from './utils/fighters.utils';
 import { IterableObject } from '../types';
 
@@ -30,6 +31,7 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
     let weight: string = '';
     let reach: string = '';
     let age: string = '';
+    let country: string = '';
 
     cheerio(".infobox", data).find("th").each((index, element) => {
       const th = cheerio(element);
@@ -38,13 +40,17 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
       if (th.text().toLowerCase() === "height") height = th.next().text().replace(regex, "").trim();
       if (th.text().toLowerCase() === "weight") weight = th.next().text().trim();
       if (th.text().toLowerCase() === "reach") reach = th.next().text().replace(regex, "").trim();
-      if (th.text().toLowerCase() === "born") age = getAge(th);
+      if (th.text().toLowerCase() === "born") {
+        age = getAge(th);
+        country = getCountry(th);
+      } 
     });
 
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (reach) update.reach = reach;
     if (age) update.age = age;
+    if (country) update.country = country;
     
     return update;
   } catch (error) {
@@ -87,6 +93,7 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     let weight: string = '';
     let division: string = '';
     let age: string = '';
+    let country: string = '';
 
     const sizeDiv = cheerio('.size_info', result.data);
     const ageDiv = cheerio('.birth_info', result.data);
@@ -95,11 +102,13 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     weight = sizeDiv.find('.weight').find('strong').text().trim();
     division = sizeDiv.find('.wclass').find('strong').text().trim();
     age = ageDiv.find('.birthday').find('strong').text().replace(/[^\d]/gi, "").trim();
+    country = ageDiv.find('.birthplace').find('strong').text().trim();
     
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (division) update.division = division;
     if (age) update.age = age;
+    if (country) update.country = country;
     update.link = sherUrl;
 
     return update;
