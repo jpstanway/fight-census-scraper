@@ -32,7 +32,7 @@ export const saveAllFighters = async (matches: MatchType[][]) => {
 };
 
 export const saveFighter = async (fighter: FighterType) => {
-  let obj = {
+  let obj: any = {
     name: fighter.name,
     division: fighter.division,
     link: fighter.link
@@ -46,6 +46,10 @@ export const saveFighter = async (fighter: FighterType) => {
       const fighterStatsAlt = await getFighterPhysicalStatsAlt(obj.name);
       obj = { ...obj, ...fighterStatsAlt };
     }
+
+    // don't need to update these fields oftens
+    if (obj.hasOwnProperty("country")) delete obj.country;
+    if (obj.hasOwnProperty("division")) delete obj.division;
   
     return await Fighter.updateOne(
       { name: obj.name }, 

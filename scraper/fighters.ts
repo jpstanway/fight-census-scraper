@@ -5,7 +5,7 @@ import {
   removeAccentsFromName, 
   createFighter, 
   getAge,
-  getCountry 
+  getCountry
 } from './utils/fighters.utils';
 import { IterableObject } from '../types';
 

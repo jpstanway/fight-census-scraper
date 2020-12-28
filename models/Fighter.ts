@@ -8,6 +8,7 @@ interface FighterDoc extends mongoose.Document {
   weight: string,
   age: string,
   country: string,
+  state: string,
   division: string,
   allDivisions: string[],
   reach: string,
@@ -22,6 +23,7 @@ const fighterSchema = new Schema({
   division: String,
   age: String,
   country: String,
+  state: String,
   allDivisions: [String],
   reach: String,
   isChampion: { type: Boolean, default: false }

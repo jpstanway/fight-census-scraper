@@ -5,6 +5,7 @@ export type Event = {
   venue: string;
   city: string;
   country: string;
+  state?: string;
 };
 
 export type Match = {
@@ -24,6 +25,7 @@ export type Fighter = {
   weight?: string;
   age?: string;
   country?: string;
+  state?: string;
   division?: string;
   reach?: string;
 };

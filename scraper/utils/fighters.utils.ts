@@ -62,13 +62,13 @@ export const getCountry = (th: any) => {
   country = country.replace(/\)|\(|\[.*\]|(, Republic of)/gi, "").trim();
 
   if (country === "Georgian SSR") country = "Georgia";
-  if (country === "Soviet Union") country = "Russia";
+  if (country === "Soviet Union" || country === "USSR") country = "Russia";
   if (states.includes(country)) country = "United States";
 
   return country;
 };
 
-const states = [
+export const states = [
   "Arkansas",
   "Alaska",
   "Alabama",

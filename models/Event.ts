@@ -7,7 +7,8 @@ interface EventDoc extends mongoose.Document {
   date: Date,
   venue: string,
   city: string,
-  country: string
+  country: string,
+  state: string
 }
 
 const eventSchema = new Schema({
@@ -16,7 +17,8 @@ const eventSchema = new Schema({
   date: Date,
   venue: String,
   city: String,
-  country: String
+  country: String,
+  state: String
 });
 
 const Event = mongoose.model<EventDoc>('Event', eventSchema);
