@@ -32,6 +32,7 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
     let reach: string = '';
     let age: string = '';
     let country: string = '';
+    let debut: string = '';
 
     cheerio(".infobox", data).find("th").each((index, element) => {
       const th = cheerio(element);
@@ -46,11 +47,32 @@ export const getFighterPhysicalStats = async (fighterUrl: string) => {
       } 
     });
 
+    cheerio(".wikitable", data).find("tr").each((index, element) => {
+      const tr = cheerio(element);
+      const event = tr.children().eq(4).text();
+      
+      if (!event.toLowerCase().includes("ufc")) {
+        // back up one element to get debut fight
+        const previous = tr.prev();
+        if (
+          previous
+            .children()
+            .eq(4)
+            .text()
+            .toLowerCase()
+            .includes('ufc')
+          ) {
+          debut = previous.children().eq(0).text().trim();
+        }
+      }
+    });
+
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (reach) update.reach = reach;
     if (age) update.age = age;
     if (country) update.country = country;
+    if (debut) update.debut = debut;
     
     return update;
   } catch (error) {
@@ -94,6 +116,7 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     let division: string = '';
     let age: string = '';
     let country: string = '';
+    let debut: string = '';
 
     const sizeDiv = cheerio('.size_info', result.data);
     const ageDiv = cheerio('.birth_info', result.data);
@@ -104,11 +127,32 @@ export const getFighterPhysicalStatsAlt = async (fighterName: string) => {
     age = ageDiv.find('.birthday').find('strong').text().replace(/[^\d]/gi, "").trim();
     country = ageDiv.find('.birthplace').find('strong').text().trim();
     
+    cheerio('.fight_history', result.data).find("tr").each((index, element) => {
+      const tr = cheerio(element);
+      const event = tr.children().eq(2).text();
+      
+      if (!event.toLowerCase().includes("ufc")) {
+        // back up one element to get debut fight
+        const previous = tr.prev();
+        if (
+          previous
+            .children()
+            .eq(2)
+            .text()
+            .toLowerCase()
+            .includes('ufc')
+          ) {
+          debut = previous.children().eq(0).text().trim();
+        }
+      }
+    });
+    
     if (height) update.height = height;
     if (weight) update.weight = weight;
     if (division) update.division = division;
     if (age) update.age = age;
     if (country) update.country = country;
+    if (debut) update.debut = debut;
     update.link = sherUrl;
 
     return update;
