@@ -1,5 +1,5 @@
-import Fighter from '../models/Fighter';
-import Match from '../models/Match';
+import Fighter2021 from '../models/Fighter2021';
+import Match2021 from '../models/Match2021';
 import { Match as MatchType, Fighter as FighterType } from '../types';
 import { 
   getFighterPhysicalStats, 
@@ -49,11 +49,13 @@ export const saveFighter = async (fighter: FighterType) => {
 
     // don't need to update these fields oftens
     if (obj.hasOwnProperty("country")) delete obj.country;
-    if (obj.hasOwnProperty("division")) delete obj.division;
   
-    return await Fighter.updateOne(
+    return await Fighter2021.updateOne(
       { name: obj.name }, 
-      {...obj, $addToSet: { allDivisions: obj.division }},
+      {
+        ...obj, 
+        $addToSet: { allDivisions: obj.division }
+      },
       { upsert: true }
     );
   } catch (error) {
@@ -62,7 +64,7 @@ export const saveFighter = async (fighter: FighterType) => {
 };
 
 export const saveAddtlFighters = async () => {
-  const matches = await Match.find({});
+  const matches = await Match2021.find({});
   const fighters = await getAddtlFighters();
   const fightersMap = fighters
     .filter((fighter: FighterType) => { 
@@ -95,7 +97,7 @@ export const updateChampions = async () => {
   const champions = await getCurrentChampions();
 
   const championsMap = champions.map(async (champion: string) => {
-    return await Fighter.updateOne({ name: champion }, { isChampion: true });
+    return await Fighter2021.updateOne({ name: champion }, { isChampion: true });
   });
     
   return Promise.all(championsMap);
