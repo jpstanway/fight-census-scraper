@@ -1,5 +1,5 @@
-import Event from '../models/Event';
-import Match from '../models/Match';
+import Event2021 from '../models/Event2021';
+import Match2021 from '../models/Match2021';
 import { getPastEvents, getMatches } from '../scraper/events';
 import { Event as EventType } from '../types';
 
@@ -7,11 +7,11 @@ export const savePastEvents = async () => {
   const events = await getPastEvents();
 
   try {
-    const res = await Event.insertMany(events, { ordered: false });
+    const res = await Event2021.insertMany(events, { ordered: false });
     if (res.length > 0) {
       console.log(`Successfully saved ${res.length} events!`);
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 11000) {
       console.log('Duplicates skipped...');
     } else {
@@ -19,7 +19,7 @@ export const savePastEvents = async () => {
     }
   }
   
-  return await Event.find({});
+  return await Event2021.find({});
 };
 
 export const saveAllMatches = async (events: EventType[]) => {
@@ -34,11 +34,11 @@ export const saveMatches = async (event: EventType) => {
   const matches = await getMatches(event.title, event.link);
 
   try {
-    const res = await Match.insertMany(matches, { ordered: false, });  
+    const res = await Match2021.insertMany(matches, { ordered: false, });  
     if (res.length > 0) {
       console.log(`Successfully saved ${res.length} matches!`);
     }
-  } catch (error) {
+  } catch (error: any) {
     if (error.code === 11000) {
       console.log('Duplicates skipped...');
     } else {
