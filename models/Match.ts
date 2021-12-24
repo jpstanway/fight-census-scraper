@@ -39,6 +39,14 @@ matchSchema.index({
   blue: 1
 }, { unique: true });
 
-const Match = mongoose.model<MatchDoc>('Match', matchSchema);
+const getMatchModel = (year: string = '') => {
+  let model = 'Match';
+  if (year) {
+    model += year;
+  }
+  return mongoose.model<MatchDoc>(model, matchSchema);
+};
+
+const Match = getMatchModel('2021');
 
 export default Match;

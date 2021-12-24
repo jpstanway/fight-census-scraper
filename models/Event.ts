@@ -21,6 +21,14 @@ const eventSchema = new Schema({
   state: String
 });
 
-const Event = mongoose.model<EventDoc>('Event', eventSchema);
+const getEventModel = (year: string = '') => {
+  let model = 'Event';
+  if (year) {
+    model += year;
+  }
+  return mongoose.model<EventDoc>(model, eventSchema);
+};
+
+const Event = getEventModel('2021');
 
 export default Event;
