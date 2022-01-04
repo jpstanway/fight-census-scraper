@@ -59,7 +59,7 @@ export const getAge = (th: any) => {
 export const getCountry = (th: any) => {
   const text = th.next().text().split(",");
   let country = text[text.length - 1];
-  country = country.replace(/\)|\(|\[.*\]|(, Republic of)/gi, "").trim();
+  country = country.replace(/\)|\(|\[.*\]|(, Republic of)|(, People's Republic of)/gi, "").trim();
 
   if (
     country === "U.S." || 
@@ -81,7 +81,9 @@ export const getCountry = (th: any) => {
   }
   if (country === "Georgian SSR") country = "Georgia";
   if (country === "Soviet Union" || country === "USSR") country = "Russia";
-  if (states.includes(country)) country = "United States";
+  if (states.some((state) => country.toLowerCase().includes(state.toLowerCase()))) {
+    country = "United States";
+  }
 
   return country;
 };

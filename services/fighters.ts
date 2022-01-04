@@ -48,7 +48,7 @@ export const saveFighter = async (fighter: FighterType) => {
     }
 
     // don't need to update these fields oftens
-    if (obj.hasOwnProperty("country")) delete obj.country;
+    // if (obj.hasOwnProperty("country")) delete obj.country;
   
     return await Fighter.updateOne(
       { name: obj.name }, 
